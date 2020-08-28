@@ -64,8 +64,8 @@ class DigitalFilter1D {
 
  private:
   /* Filter coefficients and states */
-  std::array<T, NUM_LEN> num_, x_;
-  std::array<T, DENOM_LEN> denom_, y_;
+  std::array<T, NUM_LEN> num_, x_ = {0};
+  std::array<T, DENOM_LEN> denom_, y_ = {0};
   T feed_forward_ = 0;
   T feed_back_ = 0;
   T output_;
