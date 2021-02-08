@@ -6,5 +6,5 @@ Lint:
   tags:
     - bfs
   script: 
-    - cpplint.py --verbose=0 --filter=-whitespace,-line_length include/filter/digital_filter_1d.h
+    - cpplint.py --verbose=0 include/filter/digital_filter_1d.h
   
