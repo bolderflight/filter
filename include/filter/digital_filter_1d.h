@@ -2,7 +2,7 @@
 * Brian R Taylor
 * brian.taylor@bolderflight.com
 * 
-* Copyright (c) 2020 Bolder Flight Systems
+* Copyright (c) 2021 Bolder Flight Systems
 */
 
 #ifndef INCLUDE_FILTER_DIGITAL_FILTER_1D_H_
@@ -17,7 +17,8 @@ namespace filters {
 template<typename T, std::size_t NUM_LEN, std::size_t DENOM_LEN>
 class DigitalFilter1D {
  public:
-  DigitalFilter1D(const std::array<T, NUM_LEN> &num_coeff, const std::array<T, DENOM_LEN> &denom_coeff) {
+  DigitalFilter1D(const std::array<T, NUM_LEN> &num_coeff,
+                  const std::array<T, DENOM_LEN> &denom_coeff) {
     num_ = num_coeff;
     denom_ = denom_coeff;
     /* Scale all coefficients by den[0] if available */
@@ -33,7 +34,7 @@ class DigitalFilter1D {
       }
     }
   }
-  T Filter(T input) {
+  T Filter(const T input) {
     /* Shift all x and y values to the right 1 */
     if (x_.size() > 0) {
       std::rotate(x_.data(), x_.data() + x_.size() - 1, x_.data() + x_.size());
