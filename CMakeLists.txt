@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 # Project information
 project(Filter
-  VERSION 1.0.3
+  VERSION 2.0.0
   DESCRIPTION "Digital filters."
   LANGUAGES CXX
 )

@@ -21,7 +21,7 @@ make
 This will build the library and an example executable called *filter_example*. The example executable source files are located at *examples/filter_example.cc*.
 
 ## Namespace
-This library is within the namespace *filters*
+This library is within the namespace *bfs*
 
 ## Classes
 
@@ -45,7 +45,7 @@ If a[0] is not equal to 1, then filter normalizes the filter coefficients by a[0
 /* Moving average filter with a window size of 5 */
 std::array<float, 5> b = {0.2, 0.2, 0.2, 0.2, 0.2};
 std::array<float, 1> a = {1};
-filters::DigitalFilter1D<float, 5, 1> dlpf(b, a);
+bfs::DigitalFilter1D<float, 5, 1> dlpf(b, a);
 ```
 
 **T Filter(T val)** Filters the input data returning the filtered value.
