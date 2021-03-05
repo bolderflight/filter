@@ -5,6 +5,7 @@ Lint:
   stage: lint
   tags:
     - bfs
-  script: 
-    - cpplint.py --verbose=0 include/filter/digital_filter_1d.h
+  script:
+    - cpplint --verbose=0 include/filter/filter.h
+    - cpplint --verbose=0 include/filter/digital_filter_1d.h
   
