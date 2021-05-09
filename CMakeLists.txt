@@ -1,12 +1,25 @@
 cmake_minimum_required(VERSION 3.13)
 # Project information
 project(Filter
-  VERSION 2.0.0
+  VERSION 2.1.0
   DESCRIPTION "Digital filters."
   LANGUAGES CXX
 )
+include(FetchContent)
+# Fetch units
+FetchContent_Declare(
+	units
+	GIT_REPOSITORY https://github.com/bolderflight/units.git
+	GIT_TAG v3.2.0
+)
+FetchContent_MakeAvailable(units)
 # Add the library target
 add_library(filter INTERFACE)
+# Link libraries
+target_link_libraries(filter
+	INTERFACE
+		units
+)
 # Setup include directories 
 target_include_directories(filter INTERFACE include/)
 

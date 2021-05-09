@@ -56,3 +56,37 @@ for (std::size_t i = 0; i < x.size(); i++) {
   y[i] = dlpf.Filter(x[i]);
 }
 ```
+
+### Iir
+This class implements a 1st order IIR filter given a desired cutoff and sampling frequency. Optionally, an initial value may also be passed for non-zero initial values.
+
+#### Methods
+
+**void Init(T cutoff_hz, T samp_hz)** Initializes the IIR filter given a cutoff frequency and sampling rate.
+
+```C++
+/*
+* An IIR filter with a 10 Hz cutoff frequency
+* and a 50 Hz sampling rate
+*/
+bfs::Iir<float> dlpf;
+dlpf.Init(10.0f, 50.0f);
+```
+
+**void Init(T cutoff_hz, T samp_hz, T initial_val)** Initializes the IIR filter given a cutoff frequency, sampling rate, and initial value.
+
+```C++
+/*
+* An IIR filter with a 10 Hz cutoff frequency,
+* a 50 Hz sampling rate, and an initial value
+* of 101325.
+*/
+bfs::Iir<float> dlpf;
+dlpf.Init(10.0f, 50.0f, 101325.0f);
+```
+
+**T Filter(T val)** Passes a new value to the filter and returns the filtered result.
+
+```C++
+dlpf.Filter(97600.0f);
+```
