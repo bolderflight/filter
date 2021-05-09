@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.1.1
+- Fixing bug with IIR filter where template arguements weren't passed to BFS_2PI
+
 ## v2.1.0
 - Added simple low-pass IIR filter
 
