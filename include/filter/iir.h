@@ -23,10 +23,45 @@
 * IN THE SOFTWARE.
 */
 
-#ifndef INCLUDE_FILTER_FILTER_H_
-#define INCLUDE_FILTER_FILTER_H_
+#ifndef INCLUDE_FILTER_IIR_H_
+#define INCLUDE_FILTER_IIR_H_
 
-#include "filter/digital_filter_1d.h"
-#include "filter/iir.h"
+#include "units/units.h"
 
-#endif  // INCLUDE_FILTER_FILTER_H_
+namespace bfs {
+
+template<typename T>
+class Iir {
+ public:
+  static_assert(std::is_floating_point<T>::value,
+                "Only floating point types supported");
+  void Init(T cutoff_hz, T samp_hz) {
+    T fc = cutoff_hz / samp_hz;
+    b_ = static_cast<T>(2) - std::cos(BFS_2PI * fc) -
+          std::sqrt(std::pow(static_cast<T>(2) - std::cos(BFS_2PI * fc),
+          static_cast<T>(2)) - static_cast<T>(1));
+    a_ = static_cast<T>(1) - b_;
+  }
+  void Init(T cutoff_hz, T samp_hz, T initial_val) {
+    T fc = cutoff_hz / samp_hz;
+    b_ = static_cast<T>(2) - std::cos(BFS_2PI * fc) -
+          std::sqrt(std::pow(static_cast<T>(2) - std::cos(BFS_2PI * fc),
+          static_cast<T>(2)) - static_cast<T>(1));
+    a_ = static_cast<T>(1) - b_;
+    prev_output_ = initial_val;
+  }
+  T Filter(T val) {
+    T ret;
+    ret = a_ * val + b_ * prev_output_;
+    prev_output_ = ret;
+    return ret;
+  }
+
+ private:
+  T a_, b_;
+  T prev_output_ = static_cast<T>(0);
+};
+
+}  // namespace bfs
+
+#endif  // INCLUDE_FILTER_IIR_H_

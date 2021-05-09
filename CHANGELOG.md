@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.1.0
+- Added simple low-pass IIR filter
+
 ## v2.0.0
 - Updated namespace to *bfs*
 
