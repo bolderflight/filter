@@ -6,7 +6,4 @@ Lint:
   tags:
     - bfs
   script:
-    - cpplint --verbose=0 include/filter/filter.h
-    - cpplint --verbose=0 include/filter/digital_filter_1d.h
-    - cpplint --verbose=0 include/filter/iir.h
-  
+    - cpplint --verbose=0 src/filter.h

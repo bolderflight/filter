@@ -23,7 +23,7 @@
 * IN THE SOFTWARE.
 */
 
-#include "filter/filter.h"
+#include "filter.h"
 #include <array>
 #include <iostream>
 
@@ -32,6 +32,7 @@
 * https://www.mathworks.com/help/matlab/ref/filter.html
 */
 
+/* Input */
 std::array<float, 100> x = {
   0.2037,
   0.1630,
@@ -135,14 +136,21 @@ std::array<float, 100> x = {
   0.0843
 };
 
+/* Output */
 std::array<float, 100> y;
 
-int main() {
+void setup() {
+  Serial.begin(115200);
+  while (!Serial) {}
+  /* Filter config */
   std::array<float, 5> b = {0.2, 0.2, 0.2, 0.2, 0.2};
   std::array<float, 1> a = {1};
-  bfs::DigitalFilter1D<float, 5, 1> dlpf(b, a);
+  bfs::Filter<float, 5, 1> dlpf(b, a);
+  /* Run filter and print the results */
   for (std::size_t i = 0; i < x.size(); i++) {
-    y[i] = dlpf.Filter(x[i]);
-    std::cout << y[i] << std::endl;
+    y[i] = dlpf.Update(x[i]);
+    Serial.println(y[i]);
   }
 }
+
+void loop() {}

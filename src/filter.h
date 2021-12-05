@@ -23,36 +23,44 @@
 * IN THE SOFTWARE.
 */
 
-#ifndef INCLUDE_FILTER_DIGITAL_FILTER_1D_H_
-#define INCLUDE_FILTER_DIGITAL_FILTER_1D_H_
+#ifndef SRC_FILTER_H_
+#define SRC_FILTER_H_
 
+#if defined(ARDUINO)
+#include <Arduino.h>
+#endif
+#include <cstddef>
 #include <cstdint>
-#include <array>
 #include <algorithm>
+#include <type_traits>
+#include <array>
 
 namespace bfs {
 
-template<typename T, std::size_t NUM_LEN, std::size_t DENOM_LEN>
-class DigitalFilter1D {
+template<typename T, std::size_t NUM_LEN, std::size_t DEN_LEN>
+class Filter {
  public:
-  DigitalFilter1D(const std::array<T, NUM_LEN> &num_coeff,
-                  const std::array<T, DENOM_LEN> &denom_coeff) {
-    num_ = num_coeff;
-    denom_ = denom_coeff;
-    /* Scale all coefficients by den[0] if available */
-    if (denom_.size() > 0) {
-      /* Prevent divide by zero */
-      if (denom_[0] != 0) {
-        for (std::size_t i = 0; i < num_.size(); i++) {
-          num_[i] = num_[i] / denom_[0];
-        }
-        for (std::size_t i = 1; i < denom_.size(); i++) {
-          denom_[i] = denom_[i] / denom_[0];
-        }
+  static_assert(std::is_floating_point<T>::value,
+                "Only floating point types supported");
+  static_assert(NUM_LEN > 0,
+                "Filter numerator length must be greater than 0");
+  static_assert(DEN_LEN > 0,
+                "Filter denomenator length must be greater than 0");
+  Filter(const std::array<T, NUM_LEN> &b, const std::array<T, DEN_LEN> &a) {
+    b_ = b;
+    a_ = a;
+    /* Scale all coefficients by a[0] */
+    /* Prevent divide by 0 */
+    if (a_[0] != 0) {
+      for (std::size_t i = 0; i < b_.size(); i++) {
+        b_[i] = b_[i] / a_[0];
+      }
+      for (std::size_t i = 1; i < a_.size(); i++) {
+        a_[i] = a_[i] / a_[0];
       }
     }
   }
-  T Filter(const T input) {
+  T Update(const T x) {
     /* Shift all x and y values to the right 1 */
     if (x_.size() > 0) {
       std::rotate(x_.data(), x_.data() + x_.size() - 1, x_.data() + x_.size());
@@ -61,35 +69,45 @@ class DigitalFilter1D {
       std::rotate(y_.data(), y_.data() + y_.size() - 1, y_.data() + y_.size());
     }
     /* Grab the newest x value */
-    x_[0] = input;
-    /* Apply all num coefficients */
+    x_[0] = x;
+    /* Apply all b coefficients */
     feed_forward_ = 0;
-    for (std::size_t i = 0; i < num_.size(); i++) {
-      feed_forward_ += num_[i] * x_[i];
+    for (std::size_t i = 0; i < b_.size(); i++) {
+      feed_forward_ += b_[i] * x_[i];
     }
-    /* Apply all den coefficients */
-    feed_back_ = 0;
-    for (std::size_t i = 1; i < denom_.size(); i++) {
-      feed_back_ += denom_[i] * y_[i];
+    /* Apply all a coefficients */
+    feedback_ = 0;
+    for (std::size_t i = 1; i < a_.size(); i++) {
+      feedback_ += a_[i] * y_[i];
     }
     /* Get the output */
-    output_ = feed_forward_ - feed_back_;
+    output_ = feed_forward_ - feedback_;
     /* Grab the newest y value */
     if (y_.size() > 0) {
       y_[0] = output_;
     }
     return output_;
   }
+  void Reset() {
+    for (std::size_t i = 0; i < x_.size(); i++) {
+      x_[i] = 0;
+    }
+    for (std::size_t i = 0; i < y_.size(); i++) {
+      y_[i] = 0;
+    }
+    feed_forward_ = 0;
+    feedback_ = 0;
+  }
 
  private:
   /* Filter coefficients and states */
-  std::array<T, NUM_LEN> num_, x_ = {0};
-  std::array<T, DENOM_LEN> denom_, y_ = {0};
+  std::array<T, NUM_LEN> b_, x_ = {0};
+  std::array<T, DEN_LEN> a_, y_ = {0};
   T feed_forward_ = 0;
-  T feed_back_ = 0;
+  T feedback_ = 0;
   T output_;
 };
 
-};  // namespace bfs
+}  // namespace bfs
 
-#endif  // INCLUDE_FILTER_DIGITAL_FILTER_1D_H_
+#endif  // SRC_FILTER_H_
