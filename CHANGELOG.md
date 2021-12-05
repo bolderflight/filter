@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.0.0
+- Only includes 1D digital filter, similar to MATLAB's filter function
+- Updated directory structure to support Arduino in addition to CMake builds
+- Added an Arduino example
+- Updated README
+
 ## v2.1.1
 - Fixing bug with IIR filter where template arguements weren't passed to BFS_2PI
 
