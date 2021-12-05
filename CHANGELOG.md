@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.1
+- Updated Arduino example to not include iostream and to increase resolution displayed
+- Removed initialization of x and y states in class, it wasn't needed and was causing issues with the Arduino compilation
+
 ## v3.0.0
 - Only includes 1D digital filter, similar to MATLAB's filter function
 - Updated directory structure to support Arduino in addition to CMake builds

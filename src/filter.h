@@ -101,8 +101,8 @@ class Filter {
 
  private:
   /* Filter coefficients and states */
-  std::array<T, NUM_LEN> b_, x_ = {0};
-  std::array<T, DEN_LEN> a_, y_ = {0};
+  std::array<T, NUM_LEN> b_, x_;
+  std::array<T, DEN_LEN> a_, y_;
   T feed_forward_ = 0;
   T feedback_ = 0;
   T output_;
