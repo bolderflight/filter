@@ -24,8 +24,6 @@
 */
 
 #include "filter.h"
-#include <array>
-#include <iostream>
 
 /*
 * MATLAB's moving average filter example from: 
@@ -149,7 +147,7 @@ void setup() {
   /* Run filter and print the results */
   for (std::size_t i = 0; i < x.size(); i++) {
     y[i] = dlpf.Update(x[i]);
-    Serial.println(y[i]);
+    Serial.println(y[i], 6);
   }
 }
 
