@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.1.0
+- Added IIR filter
+
 ## v3.0.1
 - Updated Arduino example to not include iostream and to increase resolution displayed
 - Removed initialization of x and y states in class, it wasn't needed and was causing issues with the Arduino compilation
