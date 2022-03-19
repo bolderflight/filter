@@ -2,7 +2,7 @@
 * Brian R Taylor
 * brian.taylor@bolderflight.com
 * 
-* Copyright (c) 2021 Bolder Flight Systems Inc
+* Copyright (c) 2022 Bolder Flight Systems Inc
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the “Software”), to
@@ -23,8 +23,8 @@
 * IN THE SOFTWARE.
 */
 
-#ifndef SRC_FILTER_H_
-#define SRC_FILTER_H_
+#ifndef FILTER_SRC_FILTER_H_  // NOLINT
+#define FILTER_SRC_FILTER_H_
 
 #if defined(ARDUINO)
 #include <Arduino.h>
@@ -34,6 +34,7 @@
 #include <algorithm>
 #include <type_traits>
 #include <array>
+#include "iir.h"  // NOLINT
 
 namespace bfs {
 
@@ -110,4 +111,4 @@ class Filter {
 
 }  // namespace bfs
 
-#endif  // SRC_FILTER_H_
+#endif  // FILTER_SRC_FILTER_H_ NOLINT

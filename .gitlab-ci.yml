@@ -7,3 +7,4 @@ Lint:
     - bfs
   script:
     - cpplint --verbose=0 src/filter.h
+    - cpplint --verbose=0 src/iir.h
