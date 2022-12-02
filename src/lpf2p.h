@@ -44,7 +44,7 @@ class Lpf2p {
   static_assert(std::is_floating_point<T>::value,
                 "Only floating point types supported");
   void Init(T cutoff_hz, T samp_hz) {
-    T fc = math::max(cutoff_hz, sample_freq * 0.001f);
+    T fc = math::max(cutoff_hz, samp_hz * 0.001f);
     T fr = samp_hz / fc;
     T ohm = math::tanf(BFS_PI<T> / fr);
     T cosPio4 = math::cosf(BFS_PI<T> / static_cast<T>(4));
@@ -59,14 +59,14 @@ class Lpf2p {
   }
 
   void Init(T cutoff_hz, T samp_hz, T initial_val) {
-    T fc = math::max(cutoff_hz, sample_freq * 0.001f);
+    T fc = math::max(cutoff_hz, samp_hz * 0.001f);
     T fr = samp_hz / fc;
     T ohm = math::tanf(BFS_PI<T> / fr);
     T cosPio4 = math::cosf(BFS_PI<T> / static_cast<T>(4));
     T c = static_cast<T>(1) + static_cast<T>(2) * cosPio4 * ohm + ohm * ohm;
     
     b0_ = ohm * ohm / c;
-    b1_ = static_cast<2> * b0_;
+    b1_ = static_cast<T>(2) * b0_;
     b2_ = b0_;
 
     a1_ = static_cast<T>(2) * (ohm * ohm - static_cast<T>(1)) / c;
