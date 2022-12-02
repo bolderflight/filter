@@ -46,8 +46,8 @@ class Lpf2p {
   void Init(T cutoff_hz, T samp_hz) {
     T fc = std::max(cutoff_hz, samp_hz * 0.001f);
     T fr = samp_hz / fc;
-    T ohm = std::tanf(BFS_PI<T> / fr);
-    T cosPio4 = std::cosf(BFS_PI<T> / static_cast<T>(4));
+    T ohm = std::tan(BFS_PI<T> / fr);
+    T cosPio4 = std::cos(BFS_PI<T> / static_cast<T>(4));
     T c = static_cast<T>(1) + static_cast<T>(2) * cosPio4 * ohm + ohm * ohm;
     
     b0_ = ohm * ohm / c;
@@ -61,8 +61,8 @@ class Lpf2p {
   void Init(T cutoff_hz, T samp_hz, T initial_val) {
     T fc = std::max(cutoff_hz, samp_hz * 0.001f);
     T fr = samp_hz / fc;
-    T ohm = std::tanf(BFS_PI<T> / fr);
-    T cosPio4 = std::cosf(BFS_PI<T> / static_cast<T>(4));
+    T ohm = std::tan(BFS_PI<T> / fr);
+    T cosPio4 = std::cos(BFS_PI<T> / static_cast<T>(4));
     T c = static_cast<T>(1) + static_cast<T>(2) * cosPio4 * ohm + ohm * ohm;
     
     b0_ = ohm * ohm / c;
