@@ -23,6 +23,9 @@
 * IN THE SOFTWARE.
 */
 
+///Author: Leonard Hall <LeonardTHall@gmail.com>
+///Adapted to BFS by Tuan Luong
+
 #ifndef FILTER_SRC_LPF2P_H_  // NOLINT
 #define FILTER_SRC_LPF2P_H_
 
