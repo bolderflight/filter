@@ -111,3 +111,38 @@ dlpf.Init(10.0f, 50.0f, 101325.0f);
 ```C++
 dlpf.Filter(97600.0f);
 ```
+
+## LPF2P
+
+This class implements a 2nd order low pass filter given a desired cutoff and sampling frequency. Optionally, an initial value may also be passed for non-zero initial values.
+
+### Methods
+
+**void Init(T cutoff_hz, T samp_hz)** Initializes the 2nd order LP filter given a cutoff frequency and sampling rate.
+
+```C++
+/*
+* A 2nd order LP filter with a 10 Hz cutoff frequency
+* and a 50 Hz sampling rate
+*/
+bfs::Lpf2p<float> dlpf;
+dlpf.Init(10.0f, 50.0f);
+```
+
+**void Init(T cutoff_hz, T samp_hz, T initial_val)** Initializes the 2nd order LP filter given a cutoff frequency, sampling rate, and initial value.
+
+```C++
+/*
+* A 2nd order LP filter with a 10 Hz cutoff frequency,
+* a 50 Hz sampling rate, and an initial value
+* of 101325.
+*/
+bfs::Lpf2p<float> dlpf;
+dlpf.Init(10.0f, 50.0f, 101325.0f);
+```
+
+**T Filter(T val)** Passes a new value to the filter and returns the filtered result.
+
+```C++
+dlpf.Filter(97600.0f);
+```
