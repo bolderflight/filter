@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.2.0
+- Pulled in second order low pass filter from Tuan Luong
+
 ## v3.1.0
 - Added IIR filter
 

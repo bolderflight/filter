@@ -35,7 +35,7 @@
 #include <type_traits>
 #include <array>
 #include "iir.h"  // NOLINT
-#include "lpf2p.h" //NOLINT
+#include "lpf2p.h"  // NOLINT
 
 namespace bfs {
 
