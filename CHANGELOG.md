@@ -1,5 +1,8 @@
 # Changelog
 
+## v3.3.0
+- Removed second order low pass filter - there are issues with initializing a value.
+
 ## v3.2.0
 - Pulled in second order low pass filter from Tuan Luong
 
