@@ -2,7 +2,7 @@
 * Brian R Taylor
 * brian.taylor@bolderflight.com
 * 
-* Copyright (c) 2022 Bolder Flight Systems Inc
+* Copyright (c) 2023 Bolder Flight Systems Inc
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the “Software”), to
@@ -28,72 +28,64 @@
 
 #if defined(ARDUINO)
 #include <Arduino.h>
-#endif
+#else
 #include <cstddef>
 #include <cstdint>
-#include <algorithm>
-#include <type_traits>
-#include <array>
+#include <cstring>
+#endif
+
 #include "iir.h"  // NOLINT
 
 namespace bfs {
 
-template<typename T, std::size_t NUM_LEN, std::size_t DEN_LEN>
+template<typename T, size_t N, size_t M>
 class Filter {
  public:
-  static_assert(std::is_floating_point<T>::value,
-                "Only floating point types supported");
-  static_assert(NUM_LEN > 0,
-                "Filter numerator length must be greater than 0");
-  static_assert(DEN_LEN > 0,
-                "Filter denomenator length must be greater than 0");
-  Filter(const std::array<T, NUM_LEN> &b, const std::array<T, DEN_LEN> &a) {
-    b_ = b;
-    a_ = a;
+  Filter(const T (&b)[N], const T (&a)[M]) {
+    for (size_t i = 0; i < N; i++) {
+      b_[i] = b[i];
+    }
+    for (size_t i = 0; i < M; i++) {
+      a_[i] = a[i];
+    }
     /* Scale all coefficients by a[0] */
     /* Prevent divide by 0 */
     if (a_[0] != 0) {
-      for (std::size_t i = 0; i < b_.size(); i++) {
+      for (size_t i = 0; i < N; i++) {
         b_[i] = b_[i] / a_[0];
       }
-      for (std::size_t i = 1; i < a_.size(); i++) {
+      for (size_t i = 1; i < M; i++) {
         a_[i] = a_[i] / a_[0];
       }
     }
   }
   T Update(const T x) {
     /* Shift all x and y values to the right 1 */
-    if (x_.size() > 0) {
-      std::rotate(x_.data(), x_.data() + x_.size() - 1, x_.data() + x_.size());
-    }
-    if (y_.size() > 0) {
-      std::rotate(y_.data(), y_.data() + y_.size() - 1, y_.data() + y_.size());
-    }
+    memmove(&x_[1], &x_[0], sizeof(x_) - sizeof(x_[0]));
+    memmove(&y_[1], &y_[0], sizeof(y_) - sizeof(y_[0]));
     /* Grab the newest x value */
     x_[0] = x;
     /* Apply all b coefficients */
     feed_forward_ = 0;
-    for (std::size_t i = 0; i < b_.size(); i++) {
+    for (size_t i = 0; i < N; i++) {
       feed_forward_ += b_[i] * x_[i];
     }
     /* Apply all a coefficients */
     feedback_ = 0;
-    for (std::size_t i = 1; i < a_.size(); i++) {
+    for (size_t i = 1; i < M; i++) {
       feedback_ += a_[i] * y_[i];
     }
     /* Get the output */
     output_ = feed_forward_ - feedback_;
     /* Grab the newest y value */
-    if (y_.size() > 0) {
-      y_[0] = output_;
-    }
+    y_[0] = output_;
     return output_;
   }
   void Reset() {
-    for (std::size_t i = 0; i < x_.size(); i++) {
+    for (size_t i = 0; i < N; i++) {
       x_[i] = 0;
     }
-    for (std::size_t i = 0; i < y_.size(); i++) {
+    for (size_t i = 0; i < M; i++) {
       y_[i] = 0;
     }
     feed_forward_ = 0;
@@ -102,8 +94,8 @@ class Filter {
 
  private:
   /* Filter coefficients and states */
-  std::array<T, NUM_LEN> b_, x_;
-  std::array<T, DEN_LEN> a_, y_;
+  T b_[N], x_[N];
+  T a_[M], y_[M];
   T feed_forward_ = 0;
   T feedback_ = 0;
   T output_;

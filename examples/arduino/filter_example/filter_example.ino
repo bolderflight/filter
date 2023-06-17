@@ -31,7 +31,7 @@
 */
 
 /* Input */
-std::array<float, 100> x = {
+float x[] = {
   0.2037,
   0.1630,
   -0.0948,
@@ -134,20 +134,17 @@ std::array<float, 100> x = {
   0.0843
 };
 
-/* Output */
-std::array<float, 100> y;
-
 void setup() {
   Serial.begin(115200);
   while (!Serial) {}
   /* Filter config */
-  std::array<float, 5> b = {0.2, 0.2, 0.2, 0.2, 0.2};
-  std::array<float, 1> a = {1};
+  float b[] = {0.2, 0.2, 0.2, 0.2, 0.2};
+  float a[] = {1};
   bfs::Filter<float, 5, 1> dlpf(b, a);
   /* Run filter and print the results */
-  for (std::size_t i = 0; i < x.size(); i++) {
-    y[i] = dlpf.Update(x[i]);
-    Serial.println(y[i], 6);
+  for (size_t i = 0; i < (sizeof(x) / sizeof(x[0])); i++) {
+    float y = dlpf.Update(x[i]);
+    Serial.println(y, 6);
   }
 }
 

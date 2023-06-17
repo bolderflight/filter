@@ -23,9 +23,6 @@
 * IN THE SOFTWARE.
 */
 
-#ifndef FILTER_SRC_IIR_H_  // NOLINT
-#define FILTER_SRC_IIR_H_
-
 #if defined(ARDUINO)
 #include <Arduino.h>
 #else
@@ -34,21 +31,31 @@
 #include <cstdint>
 #endif
 
+#include "iir.h"  // NOLINT
+#include "units.h"  // NOLINT
+
 namespace bfs {
 
-class Iir {
- public:
-  void Init(const float cutoff_hz, const float samp_hz);
-  void Init(const float cutoff_hz, const float samp_hz,
-            const float initial_val);
-  float Filter(const float val);
+void Iir::Init(const float cutoff_hz, const float samp_hz) {
+  fc_ = cutoff_hz / samp_hz;
+  b_ = 2.0f - cosf(BFS_2PI_FLOAT * fc_) -
+        sqrtf(powf(2.0f - cosf(BFS_2PI_FLOAT * fc_), 2.0f) - 1.0f);
+  a_ = 1.0f - b_;
+}
 
- private:
-  float a_, b_;
-  float fc_, ret_;
-  float prev_output_ = 0.0f;
-};
+void Iir::Init(const float cutoff_hz, const float samp_hz,
+               const float initial_val) {
+  float fc = cutoff_hz / samp_hz;
+  b_ = 2.0f - cosf(BFS_2PI_FLOAT * fc) -
+        sqrtf(powf(2.0f - cosf(BFS_2PI_FLOAT * fc), 2.0f) - 1.0f);
+  a_ = 1.0f - b_;
+  prev_output_ = initial_val;
+}
+
+float Iir::Filter(const float val) {
+  ret_ = a_ * val + b_ * prev_output_;
+  prev_output_ = ret_;
+  return ret_;
+}
 
 }  // namespace bfs
-
-#endif  // FILTER_SRC_IIR_H_ NOLINT

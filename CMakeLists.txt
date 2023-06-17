@@ -1,23 +1,60 @@
 cmake_minimum_required(VERSION 3.14)
 # Project information
 project(Filter
-  VERSION 3.3.0
+  VERSION 4.0.0
   DESCRIPTION "Digital filter library."
   LANGUAGES CXX
 )
 include(FetchContent)
+if (DEFINED DEPS)
+  string(TOUPPER ${DEPS} DEPS)
+  if (DEPS STREQUAL "BFS")
+    # Fetch global defs
+    FetchContent_Declare(
+      units
+      GIT_REPOSITORY git@192.168.1.11:bolderflight/software/units.git
+      GIT_TAG v5.0.0
+    )
+  elseif(DEPS STREQUAL "LOCAL")
+    # Fetch global defs
+    FetchContent_Declare(
+      units
+      GIT_REPOSITORY ${CMAKE_SOURCE_DIR}/../units
+      GIT_TAG v5.0.0
+    )
+  else()
+    # Fetch global defs
+    FetchContent_Declare(
+      units
+      GIT_REPOSITORY https://github.com/bolderflight/units.git
+      GIT_TAG v5.0.0
+    )
+  endif()
+else()
+# Fetch global defs
 FetchContent_Declare(
   units
-  GIT_REPOSITORY 	https://github.com/bolderflight/units.git
-  GIT_TAG v4.1.0
+  GIT_REPOSITORY https://github.com/bolderflight/units.git
+  GIT_TAG v5.0.0
 )
+endif()
 FetchContent_MakeAvailable(units)
 # Add the library target
-add_library(filter INTERFACE)
+add_library(filter
+  src/filter.h
+  src/iir.h
+  src/iir.cpp
+)
 # Link libraries
-target_link_libraries(filter INTERFACE units)
+target_link_libraries(filter
+  PRIVATE
+    units
+)
 # Setup include directories 
-target_include_directories(filter INTERFACE src/)
+target_include_directories(filter PUBLIC 
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+  $<INSTALL_INTERFACE:include>
+)
 
 # Example and unit testing if this project is built separately
 if (PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)

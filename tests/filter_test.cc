@@ -2,7 +2,7 @@
 * Brian R Taylor
 * brian.taylor@bolderflight.com
 * 
-* Copyright (c) 2021 Bolder Flight Systems Inc
+* Copyright (c) 2023 Bolder Flight Systems Inc
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the “Software”), to
@@ -28,7 +28,7 @@
 
 TEST(Filter, MovingWindow) {
   /* Input values */
-  std::array<float, 100> x = {
+  float x[] = {
     0.2037,
     0.1630,
     -0.0948,
@@ -131,7 +131,7 @@ TEST(Filter, MovingWindow) {
     0.0843
   };
   /* Output from MATLAB */
-  std::array<float, x.size()> z = {
+  float z[] = {
       0.04074,
       0.07334,
       0.05438,
@@ -234,21 +234,19 @@ TEST(Filter, MovingWindow) {
       0.20194
   };
   /* Filter config */
-  std::array<float, 5> b = {0.2, 0.2, 0.2, 0.2, 0.2};
-  std::array<float, 1> a = {1};
+  float b[] = {0.2, 0.2, 0.2, 0.2, 0.2};
+  float a[] = {1};
   bfs::Filter<float, 5, 1> dlpf(b, a);
-  /* Output from filter */
-  std::array<float, x.size()> y;
   /* Test filter */
-  for (std::size_t i = 0; i < x.size(); i++) {
-    y[i] = dlpf.Update(x[i]);
-    EXPECT_FLOAT_EQ(y[i], z[i]);
+  for (size_t i = 0; i < (sizeof(x) / sizeof(x[0])); i++) {
+    float y = dlpf.Update(x[i]);
+    EXPECT_FLOAT_EQ(y, z[i]);
   }
   /* Reset filter */
   dlpf.Reset();
   /* Test again */
-  for (std::size_t i = 0; i < x.size(); i++) {
-    y[i] = dlpf.Update(x[i]);
-    EXPECT_FLOAT_EQ(y[i], z[i]);
+  for (size_t i = 0; i < (sizeof(x) / sizeof(x[0])); i++) {
+    float y = dlpf.Update(x[i]);
+    EXPECT_FLOAT_EQ(y, z[i]);
   }
 }

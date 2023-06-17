@@ -1,5 +1,8 @@
 # Changelog
 
+## v4.0.0
+- Updated filter to remove dependency on array and algorithm. Split IIR into header and source.
+
 ## v3.3.0
 - Removed second order low pass filter - there are issues with initializing a value.
 
