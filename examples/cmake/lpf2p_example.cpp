@@ -23,37 +23,50 @@
 * IN THE SOFTWARE.
 */
 
-#ifndef FILTER_SRC_LPF2P_H_  // NOLINT
-#define FILTER_SRC_LPF2P_H_
+#include "filter.h"
+#include <array>
+#include <iostream>
 
-#if defined(ARDUINO)
-#include <Arduino.h>
-#else
-#include <cmath>
-#include <cstddef>
-#include <cstdint>
-#endif
+int main() {
+    float x[] = {
+    1,
+    1.5,
+    1,
+    0.5,
+    -0.1,
+    0.1,
+    5,
+    5.1,
+    };
 
-namespace bfs {
+    float cutoff_hz = 5.0f;
+    float samp_hz = 100.0f;
 
-template<typename T>
-class Lpf2p {
- public:
-  void Init(const T cutoff_hz, const T samp_hz);
-  void Init(const T cutoff_hz, const T samp_hz,
-            const T initial_val);
-  T Filter(const T val, const T cutoff_hz=static_cast<T>(0), 
-            const T samp_hz=static_cast<T>(0));
+    /*
+    First implementation follows BFS with separate init and filter method
+    */
+    bfs::Lpf2p<float> lpf2p_bfs;
 
- private:
-  bool initialized_ = false;
-  T a1_, a2_, b0_, b1_, b2_;
-  T cutoff_hz_, ret_val_;
-  T prev_output_ = static_cast<T>(0);
-  T delay1_ = prev_output_;
-  T delay2_ = prev_output_;
-};
+    std::cout<<"Second implementation\n";
 
-}  // namespace bfs
+    // Init
+    lpf2p_bfs.Init(cutoff_hz, samp_hz, x[0]);
+    std::cout<<x[0]<<"\n"; // This method skip the first val in the loop
 
-#endif  // FILTER_SRC_LPF2P_H_ NOLINT
+    // Apply filter
+    for (size_t i = 1; i < (sizeof(x) / sizeof(x[0])); i++){
+        float y = lpf2p_bfs.Filter(x[i]);
+        std::cout<<y<<"\n";
+    }
+
+    /*
+    Second implementation follows Ardupilot by just using the filter method
+    */
+
+    bfs::Lpf2p<float> lpf2p_ardu;
+    std::cout<<"Second implementation\n";
+    for (size_t i = 0; i < (sizeof(x) / sizeof(x[0])); i++){
+        float y = lpf2p_ardu.Filter(x[i], cutoff_hz, samp_hz);
+        std::cout<<y<<"\n";
+    }
+}

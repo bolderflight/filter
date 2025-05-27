@@ -57,6 +57,7 @@ void Lpf2p<T>::Init(const T cutoff_hz, const T samp_hz, const T initial_val) {
     Init(cutoff_hz, samp_hz); //Calculate the necessary filter coefficients
 
     prev_output_ = delay1_ = delay2_ = initial_val * (static_cast<T>(1) / (static_cast<T>(1) + a1_ + a2_));
+    
 }
 
 template<typename T>
@@ -75,3 +76,7 @@ T Lpf2p<T>::Filter(const T val, const T cutoff_hz, const T samp_hz) {
 
 
 }   //namespace bfs
+
+// Make instances so we don't have to implement this in header
+template class bfs::Lpf2p<float>;
+template class bfs::Lpf2p<double>;
