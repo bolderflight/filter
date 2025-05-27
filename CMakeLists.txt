@@ -44,6 +44,8 @@ add_library(filter
   src/filter.h
   src/iir.h
   src/iir.cpp
+  src/lpf2p.h
+  src/lpf2p.cpp
 )
 # Link libraries
 target_link_libraries(filter

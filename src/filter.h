@@ -35,6 +35,7 @@
 #endif
 
 #include "iir.h"  // NOLINT
+#include "lpf2p.h" //NOLINT
 
 namespace bfs {
 
