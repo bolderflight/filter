@@ -240,13 +240,86 @@ TEST(Filter, MovingWindow) {
   /* Test filter */
   for (size_t i = 0; i < (sizeof(x) / sizeof(x[0])); i++) {
     float y = dlpf.Update(x[i]);
-    EXPECT_FLOAT_EQ(y, z[i]);
+    EXPECT_NEAR(y, z[i], 0.000001f);
   }
   /* Reset filter */
   dlpf.Reset();
   /* Test again */
   for (size_t i = 0; i < (sizeof(x) / sizeof(x[0])); i++) {
     float y = dlpf.Update(x[i]);
-    EXPECT_FLOAT_EQ(y, z[i]);
+    EXPECT_NEAR(y, z[i], 0.000001f);
+  }
+}
+
+TEST(Filter, LPF2P_IMP) {
+  // Result from Ardupilot LPF2P
+  float z[] = {
+    1,
+    1.010042,
+    1.035759,
+    1.049380,
+    1.011974,
+    0.9147217,
+    0.8812911,
+    1.094320
+  };
+
+  float x[] = {
+    1,
+    1.5,
+    1,
+    0.5,
+    -0.1,
+    0.1,
+    5,
+    5.1,
+  };
+
+  float cutoff_hz = 5.0f;
+  float samp_hz = 100.0f;
+
+  // Test implicit initialization
+  bfs::Lpf2p<float> lpf2p;
+  
+  for (size_t i = 0; i < (sizeof(x) / sizeof(x[0])); i++){
+    float y = lpf2p.Filter(x[i], cutoff_hz, samp_hz);
+    EXPECT_NEAR(y, z[i], 0.000001f);
+  }
+}
+
+TEST(Filter, LPF2P_ONESTEP_EXP) {
+  // Result from Ardupilot LPF2P
+  float z[] = {
+    1,
+    1.010042,
+    1.035759,
+    1.049380,
+    1.011974,
+    0.9147217,
+    0.8812911,
+    1.094320
+  };
+
+  float x[] = {
+    1,
+    1.5,
+    1,
+    0.5,
+    -0.1,
+    0.1,
+    5,
+    5.1,
+  };
+
+  float cutoff_hz = 5.0f;
+  float samp_hz = 100.0f;
+
+  // Test explicit one step initialization
+  bfs::Lpf2p<float> lpf2p;
+  lpf2p.Init(cutoff_hz, samp_hz, x[0]);
+
+  for (size_t i = 1; i < (sizeof(x) / sizeof(x[0])); i++){
+    float y = lpf2p.Filter(x[i]);
+    EXPECT_NEAR(y, z[i], 0.000001f);
   }
 }
